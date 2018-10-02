@@ -1,7 +1,8 @@
-package co.uk.flat14.cleanproposal
+package uk.co.flat14.cleanproposal.ui.ui.splash
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import uk.co.flat14.cleanproposal.R
 
 class SplashActivity : AppCompatActivity() {
 

@@ -13,7 +13,7 @@ class FeatureApi: FeaturesRepository{
         }
     }
 
-    val featureMode: (FeatureJSON) -> FeatureModel = {
+    private val featureMode: (FeatureDataModel) -> FeatureModel = {
         feature -> FeatureModel(feature.id, feature.name, feature.enable)
     }
 
