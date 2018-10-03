@@ -1,48 +1,53 @@
 package uk.co.flat14.cleanproposal.ui.articles
 
 import android.app.Application
-import android.content.Context
-import androidx.databinding.ObservableArrayList
-import androidx.databinding.ObservableBoolean
-import androidx.databinding.ObservableList
+import android.util.Log
+import android.view.View
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import uk.co.flat14.data.news.NewsApi
 import uk.co.flat14.domain.usecase.news.GetNewsInteractor
 import uk.co.flat14.domain.usecase.news.GetNewsUseCase
 import uk.co.flat14.domain.usecase.news.NewsArticleModel
+import java.util.concurrent.TimeUnit
 
 // Based on the code in https://github.com/googlesamples/android-architecture/tree/todo-mvvm-live-kotlin/
 
 open class ArticleViewModel(
         application: Application
-): AndroidViewModel(application){
+) : AndroidViewModel(application) {
 
     // to be injected
     private val newsRepository = NewsApi()
     private val useCase: GetNewsUseCase = GetNewsInteractor(newsRepository)
+    private lateinit var articlesListLiveData: MutableLiveData<List<ArticleModel>>
+    val dataLoading = MutableLiveData<Int>()
 
-//    private val context: Context = application.applicationContext //Application Context to avoid leaks.
-    val items: ObservableList<ArticleModel> = ObservableArrayList()
-    val dataLoading = ObservableBoolean(false)
-
-    fun loadArticles(){
-        dataLoading.set(true)
-        useCase.getNews()
-                .map {news -> news.map(newsMapper)}
-                .doFinally { dataLoading.set(false)}
-                .subscribe (
-                        {onArticleLoadSuccessful(it)},
-                        {onArticleLoadError(it)} )
+    fun loadArticles(): LiveData<List<ArticleModel>> {
+        if (!::articlesListLiveData.isInitialized) {
+            dataLoading.value = View.VISIBLE
+            Log.d("RxCall", "Start")
+            articlesListLiveData = MutableLiveData()
+            useCase.getNews()
+                    .delay(10, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .map { news -> news.map(newsMapper) }
+                    .doAfterTerminate {
+                        Log.d("RxCall", "End")
+                        dataLoading.value = View.GONE
+                    }
+                    .subscribe(
+                            { onArticleLoadSuccessful(it) },
+                            { onArticleLoadError(it) })
+        }
+        return articlesListLiveData
     }
 
 
     private fun onArticleLoadSuccessful(it: List<ArticleModel>) {
-        with(items){
-            clear()
-            addAll(it)
-        }
+        articlesListLiveData.value = it
     }
 
     private fun onArticleLoadError(it: Throwable) {
@@ -50,10 +55,8 @@ open class ArticleViewModel(
 
     }
 
-    private val newsMapper:(NewsArticleModel) -> ArticleModel = {
-        article -> ArticleModel(article.title, article.content, article.author)
+    private val newsMapper: (NewsArticleModel) -> ArticleModel = { article ->
+        ArticleModel(article.title, article.content, article.author)
     }
-
-
 
 }

@@ -3,12 +3,11 @@ package uk.co.flat14.cleanproposal.ui.articles
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.ObservableList
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.article_list_row.view.*
 import uk.co.flat14.cleanproposal.R
 
-class ArticleListAdapter (private var articleList: ObservableList<ArticleModel>): RecyclerView.Adapter<ArticleListAdapter.ViewHolder>() {
+class ArticleListAdapter (private var articleList: ArrayList<ArticleModel>): RecyclerView.Adapter<ArticleListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.article_list_row, parent, false)

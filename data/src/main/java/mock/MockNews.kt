@@ -40,8 +40,6 @@ class MockNews{
                         author,
                         "2018-08-03 9h33:00.000")
         )
-
-        Thread.sleep(10000)
         return Single.just(articlesList)
     }
 
