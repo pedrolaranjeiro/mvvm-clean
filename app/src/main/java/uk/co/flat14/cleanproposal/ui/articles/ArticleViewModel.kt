@@ -1,8 +1,8 @@
-package uk.co.flat14.cleanproposal.ui.ui.articles
+package uk.co.flat14.cleanproposal.ui.articles
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import flat14.uk.co.domain.usecase.news.GetNewsUseCase
+import uk.co.flat14.domain.usecase.news.GetNewsUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers

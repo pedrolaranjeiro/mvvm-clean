@@ -1,6 +1,6 @@
-package uk.co.flat14.cleanproposal.ui.modules
+package uk.co.flat14.cleanproposal.modules
 
-import uk.co.flat14.cleanproposal.ui.ui.articles.ArticleViewModel
+import uk.co.flat14.cleanproposal.ui.articles.ArticleViewModel
 import dagger.Component
 import javax.inject.Singleton
 

@@ -1,4 +1,4 @@
-package uk.co.flat14.cleanproposal.ui.ui.articles
+package uk.co.flat14.cleanproposal.ui.articles
 
 data class ArticleModel(
         val title:String,

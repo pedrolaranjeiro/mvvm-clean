@@ -1,11 +1,11 @@
 package uk.co.flat14.data.features
 
-import flat14.uk.co.domain.usecase.features.FeatureModel
-import flat14.uk.co.domain.usecase.features.FeaturesRepository
+import uk.co.flat14.domain.usecase.features.FeaturesRepository
 import io.reactivex.Single
 import mock.MockFirebase
+import uk.co.flat14.domain.usecase.features.FeatureModel
 
-class FeatureApi: FeaturesRepository{
+class FeatureApi: FeaturesRepository {
 
     override fun getFeatureList(): Single<List<FeatureModel>> {
         return Single.just(MockFirebase().getFeatures()).map {

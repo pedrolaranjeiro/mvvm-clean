@@ -1,4 +1,4 @@
-package uk.co.flat14.cleanproposal.ui
+package uk.co.flat14.cleanproposal
 
 import android.content.ContextWrapper
 import android.view.View

@@ -1,4 +1,4 @@
-package uk.co.flat14.cleanproposal.ui.ui.splash
+package uk.co.flat14.cleanproposal.ui.splash
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

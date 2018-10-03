@@ -1,4 +1,4 @@
-package uk.co.flat14.cleanproposal.ui.ui.articles
+package uk.co.flat14.cleanproposal.ui.articles
 
 import android.view.LayoutInflater
 import android.view.View

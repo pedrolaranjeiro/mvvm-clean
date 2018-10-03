@@ -1,4 +1,4 @@
-package flat14.uk.co.domain.usecase.news
+package uk.co.flat14.domain.usecase.news
 
 import io.reactivex.Single
 
