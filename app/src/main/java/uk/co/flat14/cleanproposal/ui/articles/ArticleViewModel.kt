@@ -1,61 +1,59 @@
 package uk.co.flat14.cleanproposal.ui.articles
 
-import android.view.View
-import androidx.lifecycle.MutableLiveData
-import uk.co.flat14.domain.usecase.news.GetNewsUseCase
+import android.app.Application
+import android.content.Context
+import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableList
+import androidx.lifecycle.AndroidViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import uk.co.flat14.cleanproposal.ui.BaseViewModel
-import javax.inject.Inject
+import uk.co.flat14.data.news.NewsApi
+import uk.co.flat14.domain.usecase.news.GetNewsInteractor
+import uk.co.flat14.domain.usecase.news.GetNewsUseCase
+import uk.co.flat14.domain.usecase.news.NewsArticleModel
 
-class ArticleViewModel: BaseViewModel(){
+// Based on the code in https://github.com/googlesamples/android-architecture/tree/todo-mvvm-live-kotlin/
 
-    @Inject
-    lateinit var getNewsUseCase: GetNewsUseCase
+open class ArticleViewModel(
+        application: Application
+): AndroidViewModel(application){
 
-    private lateinit var subscription: Disposable
+    // to be injected
+    private val newsRepository = NewsApi()
+    private val useCase: GetNewsUseCase = GetNewsInteractor(newsRepository)
 
-    val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
+//    private val context: Context = application.applicationContext //Application Context to avoid leaks.
+    val items: ObservableList<ArticleModel> = ObservableArrayList()
+    val dataLoading = ObservableBoolean(false)
 
-    init {
-        loadArticles()
+    fun loadArticles(){
+        dataLoading.set(true)
+        useCase.getNews()
+                .map {news -> news.map(newsMapper)}
+                .doFinally { dataLoading.set(false)}
+                .subscribe (
+                        {onArticleLoadSuccessful(it)},
+                        {onArticleLoadError(it)} )
     }
 
-    private fun loadArticles(){
-        subscription = getNewsUseCase.getNews()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe{onRetrieveNewsListStart()}
-                .doAfterTerminate {
-                    onRetrieveNewsListFinish()
-                }
-                .subscribe(
-                    {onRetrieveNewsListSuccess()},
-                    {onRetrieveNewsListError()}
-                )
+
+    private fun onArticleLoadSuccessful(it: List<ArticleModel>) {
+        with(items){
+            clear()
+            addAll(it)
+        }
     }
 
-
-    private fun onRetrieveNewsListStart(){
-        loadingVisibility.value = View.VISIBLE
-    }
-
-    private fun onRetrieveNewsListFinish(){
-        loadingVisibility.value = View.GONE
-    }
-
-    private fun onRetrieveNewsListSuccess(){
-
-    }
-
-    private fun onRetrieveNewsListError(){
+    private fun onArticleLoadError(it: Throwable) {
+        // TODO show some error
 
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        subscription.dispose()
+    private val newsMapper:(NewsArticleModel) -> ArticleModel = {
+        article -> ArticleModel(article.title, article.content, article.author)
     }
+
+
 
 }

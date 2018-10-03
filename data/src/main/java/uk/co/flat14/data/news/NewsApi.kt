@@ -1,9 +1,12 @@
 package uk.co.flat14.data.news
 
+import io.reactivex.Scheduler
 import uk.co.flat14.domain.usecase.news.NewsArticleModel
 import uk.co.flat14.domain.usecase.news.NewsRepository
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import mock.MockNews
+import java.util.concurrent.TimeUnit
 
 class NewsApi: NewsRepository {
 
@@ -15,7 +18,7 @@ class NewsApi: NewsRepository {
 
     private val newsMapper:(NewsDataModel) -> NewsArticleModel = {
         article ->
-        NewsArticleModel(article.id, article.content, article.content, article.author.name, article.creationTime)
+        NewsArticleModel(article.id, article.title, article.content, article.author.name, article.creationTime)
     }
 
 }

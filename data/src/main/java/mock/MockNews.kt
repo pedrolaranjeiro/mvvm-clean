@@ -4,6 +4,7 @@ import io.reactivex.Single
 import uk.co.flat14.data.news.AuthorDataModel
 import uk.co.flat14.data.news.NewsDataModel
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class MockNews{
@@ -40,7 +41,7 @@ class MockNews{
                         "2018-08-03 9h33:00.000")
         )
 
-        Thread.sleep(5000)
+        Thread.sleep(10000)
         return Single.just(articlesList)
     }
 
