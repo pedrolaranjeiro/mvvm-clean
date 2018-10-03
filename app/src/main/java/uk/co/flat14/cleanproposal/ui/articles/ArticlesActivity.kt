@@ -19,11 +19,7 @@ class ArticlesActivity: AppCompatActivity() {
         setContentView(R.layout.activity_articles)
         viewModel = ViewModelProviders.of(this).get(ArticleViewModel::class.java)
 
-        articlesListRecyclerView.layoutManager = LinearLayoutManager(this)
-        articlesListRecyclerView.adapter = ArticleListAdapter(articlesList)
-        articlesListRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        articlesListRecyclerView.setHasFixedSize(true)
-        articlesListRecyclerView.itemAnimator = DefaultItemAnimator()
+        initRecyclerView()
     }
 
     override fun onStart() {
@@ -36,6 +32,14 @@ class ArticlesActivity: AppCompatActivity() {
             articlesList.clear()
             articlesList.addAll(it)
         })
+    }
+
+    private fun initRecyclerView() {
+        articlesListRecyclerView.layoutManager = LinearLayoutManager(this)
+        articlesListRecyclerView.adapter = ArticleListAdapter(articlesList)
+        articlesListRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        articlesListRecyclerView.setHasFixedSize(true)
+        articlesListRecyclerView.itemAnimator = DefaultItemAnimator()
     }
 
 }

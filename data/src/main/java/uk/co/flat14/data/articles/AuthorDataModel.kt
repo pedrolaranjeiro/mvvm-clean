@@ -1,4 +1,4 @@
-package uk.co.flat14.data.news
+package uk.co.flat14.data.articles
 
 data class AuthorDataModel(
         val id:String,

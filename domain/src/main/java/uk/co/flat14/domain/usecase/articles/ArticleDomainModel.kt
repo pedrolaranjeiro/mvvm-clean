@@ -1,6 +1,6 @@
-package uk.co.flat14.domain.usecase.news
+package uk.co.flat14.domain.usecase.articles
 
-data class NewsArticleModel(
+data class ArticleDomainModel(
         val id: String,
         val title: String,
         val content:String,
