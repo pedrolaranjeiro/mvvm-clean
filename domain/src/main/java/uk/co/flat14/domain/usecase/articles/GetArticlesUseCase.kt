@@ -4,7 +4,7 @@ import io.reactivex.Single
 
 class GetArticlesUseCase(private val articlesRepository: ArticlesRepository){
 
-    fun getNews(): Single<List<ArticleDomainModel>>{
+    fun getArticles(): Single<List<ArticleDomainModel>>{
         return articlesRepository.getArticlesList()
     }
 

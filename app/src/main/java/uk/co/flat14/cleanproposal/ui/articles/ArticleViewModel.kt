@@ -30,7 +30,7 @@ open class ArticleViewModel(
             dataLoading.value = View.VISIBLE
             articlesListLiveData = MutableLiveData()
 
-            useCase.getNews()
+            useCase.getArticles()
                     .delay(10, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .map { news -> news.map(newsMapper) }
