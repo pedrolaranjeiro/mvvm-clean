@@ -1,11 +1,14 @@
 package uk.co.flat14.cleanproposal.ui.articles
+
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_articles.*
 import uk.co.flat14.cleanproposal.R
 
@@ -18,7 +21,6 @@ class ArticlesActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_articles)
         viewModel = ViewModelProviders.of(this).get(ArticleViewModel::class.java)
-
         initRecyclerView()
     }
 
@@ -32,6 +34,17 @@ class ArticlesActivity: AppCompatActivity() {
             articlesList.clear()
             articlesList.addAll(it)
         })
+
+        viewModel.showErrorMessage.observe(this, Observer {
+            if(it) {
+                Snackbar.make(rootView, R.string.error_server_unavailable, Snackbar.LENGTH_LONG).show()
+            }
+        })
+
+        reloadBtn.visibility = View.GONE
+//        reloadBtn.setOnClickListener {
+//            viewModel.fetchData()
+//        }
     }
 
     private fun initRecyclerView() {
