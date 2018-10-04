@@ -7,48 +7,45 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import uk.co.flat14.data.articles.ArticlesApi
 import uk.co.flat14.domain.usecase.articles.ArticleDomainModel
 import uk.co.flat14.domain.usecase.articles.GetArticlesUseCase
 
 // Based on the code in https://github.com/googlesamples/android-architecture/tree/todo-mvvm-live-kotlin/
-
-open class ArticleViewModel(
-        application: Application
-) : AndroidViewModel(application) {
+class ArticleViewModel(application: Application) : AndroidViewModel(application) {
 
     // to be injected
     private val newsRepository = ArticlesApi()
     private val useCase: GetArticlesUseCase = GetArticlesUseCase(newsRepository)
 
-    private lateinit var articles: MutableLiveData<List<ArticleModel>>
-
-    // used to control the visibility of the loading view.
+    // Used in the XML
     val dataLoading = ObservableInt()
-    lateinit var adapter : ArticleListAdapter
+    lateinit var adapter: ArticleListAdapter
 
-
-//    val showErrorMessage = MutableLiveData<Boolean>()
+    // Other vars
+    private lateinit var articlesList: ArrayList<ArticleModel>
+    private lateinit var subscription: Disposable
+    val showErrorMessage = MutableLiveData<Boolean>()
 
     init {
         dataLoading.set(View.GONE)
         loadArticles()
-//        showErrorMessage.value = false
+        showErrorMessage.value = false
     }
 
-    private fun loadArticles(): MutableLiveData<List<ArticleModel>> {
-        if (!::articles.isInitialized) {
-            articles = MutableLiveData()
-            adapter = ArticleListAdapter(articles)
+    private fun loadArticles() {
+        if (!::articlesList.isInitialized) {
+            articlesList = ArrayList()
+            adapter = ArticleListAdapter(articlesList)
             fetchArticles()
         }
-        return articles
     }
 
-    private fun fetchArticles(){
+    private fun fetchArticles() {
         dataLoading.set(View.VISIBLE)
         Log.d("RxCall", "Start")
-        useCase.getArticles()
+        subscription = useCase.getArticles()
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { news ->
                     news.map(newsMapper)
@@ -63,17 +60,25 @@ open class ArticleViewModel(
     }
 
     private fun onArticleLoadSuccessful(it: List<ArticleModel>) {
-        articles.value = it
+        articlesList.clear()
+        articlesList.addAll(it)
+        adapter.notifyDataSetChanged()
     }
 
     private fun onArticleLoadError(it: Throwable) {
         // Clear list
-//        articlesData.value = ArrayList()
-//        showErrorMessage.value = true
+        articlesList.clear()
+        adapter.notifyDataSetChanged()
+        showErrorMessage.value = true
     }
 
     private val newsMapper: (ArticleDomainModel) -> ArticleModel = { article ->
         ArticleModel(article.title, article.content, article.author)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        subscription.dispose()
     }
 
 }
