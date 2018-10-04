@@ -3,6 +3,7 @@ package uk.co.flat14.cleanproposal.ui.articles
 import android.app.Application
 import android.util.Log
 import android.view.View
+import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,25 +21,32 @@ open class ArticleViewModel(
     private val newsRepository = ArticlesApi()
     private val useCase: GetArticlesUseCase = GetArticlesUseCase(newsRepository)
 
-    lateinit var articlesData: MutableLiveData<List<ArticleModel>>
-    val dataLoading = MutableLiveData<Int>()
-    val showErrorMessage = MutableLiveData<Boolean>()
+    private lateinit var articles: MutableLiveData<List<ArticleModel>>
+
+    // used to control the visibility of the loading view.
+    val dataLoading = ObservableInt()
+    lateinit var adapter : ArticleListAdapter
+
+
+//    val showErrorMessage = MutableLiveData<Boolean>()
 
     init {
-        dataLoading.value = View.GONE
-        showErrorMessage.value = false
+        dataLoading.set(View.GONE)
+        loadArticles()
+//        showErrorMessage.value = false
     }
 
-    fun loadArticles(): MutableLiveData<List<ArticleModel>> {
-        if (!::articlesData.isInitialized) {
-            articlesData = MutableLiveData()
+    private fun loadArticles(): MutableLiveData<List<ArticleModel>> {
+        if (!::articles.isInitialized) {
+            articles = MutableLiveData()
+            adapter = ArticleListAdapter(articles)
             fetchArticles()
         }
-        return articlesData
+        return articles
     }
 
     private fun fetchArticles(){
-        dataLoading.value = View.VISIBLE
+        dataLoading.set(View.VISIBLE)
         Log.d("RxCall", "Start")
         useCase.getArticles()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -47,7 +55,7 @@ open class ArticleViewModel(
                 }
                 .doAfterTerminate {
                     Log.d("RxCall", "End")
-                    dataLoading.value = View.GONE
+                    dataLoading.set(View.GONE)
                 }
                 .subscribe(
                         { onArticleLoadSuccessful(it) },
@@ -55,13 +63,13 @@ open class ArticleViewModel(
     }
 
     private fun onArticleLoadSuccessful(it: List<ArticleModel>) {
-        articlesData.value = it
+        articles.value = it
     }
 
     private fun onArticleLoadError(it: Throwable) {
         // Clear list
-        articlesData.value = ArrayList()
-        showErrorMessage.value = true
+//        articlesData.value = ArrayList()
+//        showErrorMessage.value = true
     }
 
     private val newsMapper: (ArticleDomainModel) -> ArticleModel = { article ->

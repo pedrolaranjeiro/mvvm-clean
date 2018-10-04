@@ -1,6 +1,6 @@
 package mock
 
-import uk.co.flat14.data.articles.ArticleDataModel
+import uk.co.flat14.data.articles.model.ArticleDataModel
 import uk.co.flat14.data.articles.model.AuthorDataModel
 
 class MockArticles{
