@@ -13,7 +13,7 @@ class ArticlesApi: ArticlesRepository {
     override fun getArticlesList(): Single<List<ArticleDomainModel>> {
         return MockArticles().getArticles()
                 .map {articles -> articles.map(mapperDomain)}
-                .delay(10, TimeUnit.SECONDS)
+                .delay(5, TimeUnit.SECONDS)
     }
 
     private val mapperDomain:(ArticleDataModel) -> ArticleDomainModel = {

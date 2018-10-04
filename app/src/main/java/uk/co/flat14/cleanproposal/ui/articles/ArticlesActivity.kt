@@ -28,6 +28,8 @@ class ArticlesActivity: AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+
+        // Live Data trigger Snackbar
         viewModel.showErrorMessage.observe(this, Observer { showError ->
             if(showError){
                 Snackbar.make(rootView, R.string.error_server_unavailable, Snackbar.LENGTH_LONG).show()

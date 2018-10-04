@@ -42,5 +42,5 @@ dependencies {
 
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation 'junit:junit:4.12'
-
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-RC2"
 }
