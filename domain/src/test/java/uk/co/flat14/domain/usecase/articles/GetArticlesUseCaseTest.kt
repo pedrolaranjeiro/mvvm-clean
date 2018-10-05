@@ -4,7 +4,7 @@ import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Single
 import org.junit.Test
 import uk.co.flat14.domain.usecase.exception.DataNotAvailableException
-import java
+import java.util.*
 
 class GetArticlesUseCaseTest {
 
