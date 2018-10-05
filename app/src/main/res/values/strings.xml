@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CleanProposal</string>
+    <string name="error_server_unavailable">Please try later</string>
 </resources>
